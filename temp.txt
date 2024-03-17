@@ -1,0 +1,4 @@
+1    sal                  70000    INCOME     NULL      
+2    grocerry             2000     EXPENSE    NEED      
+3    veg                  200      EXPENSE    INVEST    
+4    sip                  2000     EXPENSE    INVEST    
