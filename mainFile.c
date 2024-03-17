@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
+// The code defines colors for styling the output
 
 #define ANSI_COLOR_RESET   "\x1b[0m"
 #define ANSI_COLOR_HEADER "\x1b[38;2;255;99;97m"    // #ff6361
@@ -13,6 +16,7 @@
 
 int no_of_records;
 
+// Struct Record is defined to represent each record in the file
 struct Record {
     int idx;
     char name[20];
@@ -21,7 +25,9 @@ struct Record {
     char expenseType[8];
 } record;
 
+// Function to print the main menu
 void printMenu() {
+    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
     printf("\n" ANSI_COLOR_MENU "1. Insert record\n" ANSI_COLOR_RESET);
     printf(ANSI_COLOR_MENU "2. Display record \n" ANSI_COLOR_RESET);
@@ -32,10 +38,12 @@ void printMenu() {
     printf(ANSI_COLOR_MENU "7. Display Income sources \n" ANSI_COLOR_RESET);
     printf(ANSI_COLOR_MENU "8. Display expenses \n" ANSI_COLOR_RESET);
     printf(ANSI_COLOR_MENU "9. Calculate interest of loan \n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "10. Exit \n" ANSI_COLOR_RESET);
-    printf("\n\n                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n");
+    printf(ANSI_COLOR_MENU "10. Generate Report \n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_MENU "11. Exit \n" ANSI_COLOR_RESET);
+    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
 }
 
+// Function to count the number of records in the file
 int getNoOfRecords(){
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
@@ -50,7 +58,7 @@ int getNoOfRecords(){
     return no_of_records;
 }
 
-
+// Function to insert a new record into the file
 void insertRecord() {
     FILE *fp = fopen("File_Of_Records.txt", "a");
     if(fp == NULL){
@@ -79,6 +87,7 @@ void insertRecord() {
     fclose(fp);
 }
 
+// Function to display all records from the file
 void displayRecord() {
     no_of_records = getNoOfRecords();
     if(no_of_records <= 0){
@@ -98,6 +107,7 @@ void displayRecord() {
     fclose((fp));
 }
 
+// Function to search for records by name
 void searchByName(char *nameToFind){
     no_of_records = getNoOfRecords();
     int similarRecord = 0;
@@ -126,6 +136,7 @@ void searchByName(char *nameToFind){
     fclose(fp);
 }
 
+// Function to modify the name of a record
 void modifyName(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
@@ -168,6 +179,7 @@ void modifyName(int index){
     printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY UPDATED" ANSI_COLOR_RESET "\n");
 }
 
+// Function to modify the amount of a record
 void modifyAmount(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
@@ -210,6 +222,7 @@ void modifyAmount(int index){
     printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY UPDATED" ANSI_COLOR_RESET "\n");
 }
 
+// Function to modify the type of a record
 void modifyRtype(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
@@ -262,6 +275,7 @@ void modifyRtype(int index){
     printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY UPDATED" ANSI_COLOR_RESET "\n");
 }
 
+// Function to modify a record (name, amount, type)
 void modifyRecord(int index) {
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
@@ -344,6 +358,7 @@ void modifyRecord(int index) {
     }
 }
 
+// Function to delete a record by index
 void deleteRecord(int index) {
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
@@ -383,6 +398,7 @@ void deleteRecord(int index) {
     printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY DELETED" ANSI_COLOR_RESET "\n");
 }
 
+// Function to sort records by amount
 void sortRecordsByAmount() {
     no_of_records = getNoOfRecords();
     struct Record recordsArr[no_of_records];
@@ -417,6 +433,7 @@ void sortRecordsByAmount() {
 
 }
 
+// Function to display income sources
 void displayIncomeSources() {
     no_of_records = getNoOfRecords();
     FILE *fp = fopen("File_Of_Records.txt", "r");
@@ -441,6 +458,7 @@ void displayIncomeSources() {
     fclose(fp);
 }
 
+// Function to display expenses
 void displayExpenses() {
     no_of_records = getNoOfRecords();
     FILE *fp = fopen("File_Of_Records.txt", "r");
@@ -465,11 +483,11 @@ void displayExpenses() {
     fclose(fp);
 }
 
+// Function to calculate loan interest
 void calculateLoanInterest() {
     double loanAmount, annualInterestRate, monthlyInterestRate;
     int loanDurationMonths;
     
-    // Input loan details
     printf("\n" ANSI_COLOR_OTHERS "Enter loan amount: " ANSI_COLOR_RESET);
     scanf("%lf", &loanAmount);
     printf(ANSI_COLOR_OTHERS "Enter annual interest rate (in percentage): " ANSI_COLOR_RESET);
@@ -498,6 +516,81 @@ void calculateLoanInterest() {
     printf("\n" ANSI_COLOR_OTHERS "Monthly Payment: " ANSI_COLOR_RESET "%.2lf\n", monthlyPayment);
     printf(ANSI_COLOR_OTHERS "Total Payment: " ANSI_COLOR_RESET "%.2lf\n", totalPayment);
     printf(ANSI_COLOR_OTHERS "Total Interest Paid: " ANSI_COLOR_RESET "%.2lf\n", totalInterest);
+}
+
+void generateReport() {
+    double income = 0;
+    double needsExpenses = 0;
+    double wantsExpenses = 0;
+    double savingsExpenses = 0;
+
+    int no_of_records = getNoOfRecords();
+    FILE *fp = fopen("File_Of_Records.txt", "r");
+    if(fp == NULL){
+        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        return;
+    }
+
+    while(fscanf(fp, "%d\t %s\t %d\t %s\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
+        if(strcmp(record.recordType, "INCOME") == 0){
+            income += record.amount;
+        } else if(strcmp(record.recordType, "EXPENSE") == 0) {
+            if(strcmp(record.expenseType, "NEED") == 0) {
+                needsExpenses += record.amount;
+            } else if(strcmp(record.expenseType, "WANT") == 0) {
+                wantsExpenses += record.amount;
+            } else if(strcmp(record.expenseType, "INVEST") == 0) {
+                savingsExpenses += record.amount;
+            }
+        }
+    }
+    fclose(fp);
+
+    double needsRatio = 0.50;
+    double wantsRatio = 0.30;
+    double savingsRatio = 0.20;
+
+    // Calculate the total expenses in each category
+    double totalExpenses = needsExpenses + wantsExpenses + savingsExpenses;
+
+    // Calculate the remaining income after deducting total expenses
+    double remainingIncome = income - totalExpenses;
+
+    // Calculate the needs, wants, and savings amount based on the remaining income
+    double needsAmount = income * needsRatio;
+    double wantsAmount = income * wantsRatio;
+    double savingsAmount = income * savingsRatio;
+
+    printf(ANSI_COLOR_HEADER "\n\nFinancial Distribution Report\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_OTHERS "Income: " ANSI_COLOR_RESET "%.2f\n", income);
+    printf(ANSI_COLOR_OTHERS "Total Expenses: " ANSI_COLOR_RESET "%.2f\n", totalExpenses);
+    printf(ANSI_COLOR_OTHERS"Remaining Income: " ANSI_COLOR_RESET "%.2f\n", remainingIncome);
+    printf(ANSI_COLOR_OTHERS "Needs Expenses: " ANSI_COLOR_RESET "%.2f\n", needsExpenses);
+    printf(ANSI_COLOR_OTHERS "Wants Expenses: " ANSI_COLOR_RESET "%.2f\n", wantsExpenses);
+    printf(ANSI_COLOR_OTHERS "Savings Expenses: " ANSI_COLOR_RESET "%.2f\n", savingsExpenses);
+    printf(ANSI_COLOR_OTHERS "Needs Expected: " ANSI_COLOR_RESET "%.2f\n", needsAmount);
+    printf(ANSI_COLOR_OTHERS "Wants Expected: " ANSI_COLOR_RESET "%.2f\n", wantsAmount);
+    printf(ANSI_COLOR_OTHERS "Investment Expected: " ANSI_COLOR_RESET "%.2f\n", savingsAmount);
+    
+    // Check if the user's distribution matches the standard ratio
+    if (needsExpenses > needsAmount || wantsExpenses > wantsAmount || savingsExpenses < savingsAmount) {
+        printf("\n" ANSI_COLOR_HEADER "Warning: Your income distribution does not meet the recommended ratio.\n" ANSI_COLOR_RESET);
+        printf("Consider adjusting your spending to align with the following ratio:\n");
+        printf("Needs: 50%%, Wants: 30%%, Savings: 20%%\n");
+    } else {
+        printf(ANSI_COLOR_SUBCHOICE "\nCongratulations! Your income distribution meets the recommended ratio.\n" ANSI_COLOR_RESET);
+    }
+
+    // Check individual expenses against the standard ratios
+    if (needsExpenses > needsAmount) {
+        printf("\n" ANSI_COLOR_HEADER "Warning: Your needs expenses exceed the recommended ratio.\n" ANSI_COLOR_RESET);
+    }
+    if (wantsExpenses > wantsAmount) {
+        printf(ANSI_COLOR_HEADER "Warning: Your wants expenses exceed the recommended ratio.\n" ANSI_COLOR_RESET);
+    }
+    if (savingsExpenses < savingsAmount) {
+        printf(ANSI_COLOR_HEADER "Warning: Your savings expenses exceed the recommended ratio.\n" ANSI_COLOR_RESET);
+    }
 }
 
 int main() {
@@ -544,13 +637,16 @@ int main() {
                 calculateLoanInterest();
                 break;
             case 10:
+                generateReport();
+                break;
+            case 11:
                 printf("\n" ANSI_COLOR_OTHERS "PROGRAM IS TERMINATED" ANSI_COLOR_RESET "\n\n");
                 exit(0);
                 break;
             default:
                 printf("\n" ANSI_COLOR_OTHERS "Invalid choice. Please enter a valid option." ANSI_COLOR_RESET "\n");
         }
-    } while (choice != 10);
+    } while (choice != 11);
 
     return 0;
 }
