@@ -81,6 +81,15 @@ void insertRecord() {
     else if(strcmp(record.recordType, "EXPENSE") == 0){
         printf(ANSI_COLOR_OTHERS "Type of the Expense -> Ex. NEED / WANT / INVEST : " ANSI_COLOR_RESET);
         scanf("%s", record.expenseType);
+        if(
+            strcmp(record.expenseType, "NEED") == 0 ||
+            strcmp(record.expenseType, "WANT") == 0 ||
+            strcmp(record.expenseType, "INVEST") == 0
+        ){}
+        else{
+            printf(ANSI_COLOR_OTHERS "\nInvalid Input" ANSI_COLOR_RESET "\n");
+            return;
+        }
     } 
     else {
         printf(ANSI_COLOR_OTHERS "\nInvalid Input" ANSI_COLOR_RESET "\n");
