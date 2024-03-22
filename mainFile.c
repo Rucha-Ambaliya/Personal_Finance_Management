@@ -96,6 +96,7 @@ void insertRecord() {
         return;
     }
     fprintf(fp, "%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
+    printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY INSERTED\n" ANSI_COLOR_RESET);
     fclose(fp);
 }
 
@@ -103,7 +104,7 @@ void insertRecord() {
 void displayRecord() {
     no_of_records = getNoOfRecords();
     if(no_of_records <= 0){
-        printf(ANSI_COLOR_OTHERS "\n\nFILE IS EMPTY\n\n");
+        printf("\n\n" ANSI_COLOR_OTHERS "FILE IS EMPTY" ANSI_COLOR_RESET "\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
@@ -117,6 +118,7 @@ void displayRecord() {
     while(fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
         printf("%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
     }
+    printf("\n\n" ANSI_COLOR_OTHERS "%d records matched\n" ANSI_COLOR_RESET, no_of_records);
     fclose((fp));
 }
 
@@ -445,7 +447,7 @@ void sortRecordsByAmount() {
     for(int i = 0; i < no_of_records; i++){
         printf("%-4d %-20s %-8d %-10s %-10s\n", i + 1, recordsArr[i].name, recordsArr[i].amount, recordsArr[i].recordType, recordsArr[i].expenseType);
     }
-
+    printf("\n\n" ANSI_COLOR_OTHERS "%d records matched\n" ANSI_COLOR_RESET, no_of_records);
 }
 
 // Function to display income sources
@@ -532,6 +534,7 @@ void calculateLoanInterest() {
     printf(ANSI_COLOR_OTHERS "Loan Duration (months): " ANSI_COLOR_RESET "%d\n", loanDurationMonths);
     printf("\n" ANSI_COLOR_OTHERS "Monthly Payment: " ANSI_COLOR_RESET "%.2lf\n", monthlyPayment);
     printf(ANSI_COLOR_OTHERS "Total Payment: " ANSI_COLOR_RESET "%.2lf\n", totalPayment);
+    printf(ANSI_COLOR_OTHERS "Monthly Interest Paid: " ANSI_COLOR_RESET "%.2lf\n", totalInterest/loanDurationMonths);
     printf(ANSI_COLOR_OTHERS "Total Interest Paid: " ANSI_COLOR_RESET "%.2lf\n", totalInterest);
 }
 

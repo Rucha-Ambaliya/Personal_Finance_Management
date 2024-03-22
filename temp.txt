@@ -1,0 +1,9 @@
+1    SAL                  70000    INCOME     NULL      
+2    GRO                  200      EXPENSE    NEED      
+3    MOBILE               2000     EXPENSE    WANT      
+4    TOUR                 10000    EXPENSE    WANT      
+5    RENT                 7000     INCOME     NULL      
+6    BIT                  6000     EXPENSE    INVEST    
+7    SIP                  5000     EXPENSE    INVEST    
+8    TRANSPORTATION       4000     EXPENSE    NEED      
+9    midcap               7000     EXPENSE    INVEST    

@@ -18,19 +18,19 @@ struct Record {
 void printMenu() {
     printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    printf("\n\n"   "PERSONAL FINANCE MANAGEMENT"   "\n");
-    printf("\n"   "Menu:\n"  );
-    printf(  "1. Insert a record\n"  );
-    printf(  "2. Display records\n"  );
-    printf(  "3. Search a record by name\n"  );
-    printf(  "4. Modify a record\n"  );
-    printf(  "5. Delete a record\n"  );
-    printf(  "6. Sort data based on the amount\n"  );
-    printf(  "7. Display Income sources\n"  );
-    printf(  "8. Display expenses\n"  );
-    printf(  "9. Calculate interest of loan\n"  );
-    printf(  "10. Generate Report\n"  );
-    printf(  "11. Exit\n"  );
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\nMenu:\n");
+    printf("1. Insert a record\n");
+    printf("2. Display records\n");
+    printf("3. Search a record by name\n");
+    printf("4. Modify a record\n");
+    printf("5. Delete a record\n");
+    printf("6. Sort data based on the amount\n");
+    printf("7. Display Income sources\n");
+    printf("8. Display expenses\n");
+    printf("9. Calculate interest of loan\n");
+    printf("10. Generate Report\n");
+    printf("11. Exit\n");
     printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
 }
 
@@ -58,23 +58,33 @@ void insertRecord() {
     }
     no_of_records = getNoOfRecords();
     record.idx = no_of_records + 1;
-    printf(  "\nEnter Name of the record: " );
+    printf("\nEnter Name of the record: ");
     scanf("%s", record.name);
-    printf(  "Enter the Amount: "  );
+    printf("Enter the Amount: ");
     scanf("%d", &record.amount);
-    printf(  "Enter type of the record -> Ex. INCOME / EXPENSE : "  );
+    printf("Enter type of the record -> Ex. INCOME / EXPENSE : ");
     scanf("%s", record.recordType);
     if(strcmp(record.recordType, "INCOME") == 0)
         strcpy(record.expenseType, "NULL");
     else if(strcmp(record.recordType, "EXPENSE") == 0){
-        printf(  "Type of the Expense -> Ex. NEED / WANT / INVEST : "  );
+        printf("Type of the Expense -> Ex. NEED / WANT / INVEST : ");
         scanf("%s", record.expenseType);
+        if(
+            strcmp(record.expenseType, "NEED") == 0 ||
+            strcmp(record.expenseType, "WANT") == 0 ||
+            strcmp(record.expenseType, "INVEST") == 0
+        ){}
+        else{
+            printf("\nInvalid Input\n");
+            return;
+        }
     } 
     else {
-        printf( "\nInvalid Input\n");
+        printf("\nInvalid Input\n");
         return;
     }
     fprintf(fp, "%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
+    printf("\n\nRECORD SUCCESSFULLY INSERTED\n");
     fclose(fp);
 }
 
@@ -82,20 +92,21 @@ void insertRecord() {
 void displayRecord() {
     no_of_records = getNoOfRecords();
     if(no_of_records <= 0){
-        printf(  "\n\nFILE IS EMPTY\n\n");
+        printf("\n\nFILE IS EMPTY\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
-    printf("\n\n"   "PERSONAL FINANCE MANAGEMENT"   "\n");
-    printf("\n"   "%-4s %-20s %-8s %-10s %-10s\n"  , "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
     printf("----------------------------------------------------------\n");
     while(fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
         printf("%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
     }
+    printf("\n\n%d records matched\n", no_of_records);
     fclose((fp));
 }
 
@@ -104,16 +115,16 @@ void searchByName(char *nameToFind){
     no_of_records = getNoOfRecords();
     int similarRecord = 0;
     if(no_of_records <= 0){
-        printf("\n\n"   "FILE IS EMPTY"   "\n\n");
+        printf("\n\nFILE IS EMPTY\n\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
-    printf("\n\n"   "PERSONAL FINANCE MANAGEMENT"   "\n");
-    printf("\n"   "%-4s %-20s %-8s %-10s %-10s\n"  , "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
     printf("----------------------------------------------------------\n");
     while(fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
         if(strcmp(record.name, nameToFind) == 0){
@@ -122,9 +133,9 @@ void searchByName(char *nameToFind){
         }
     }
     if (similarRecord == 0)
-        printf("\n\n"   "No such record exist in the file"   "\n");
+        printf("\n\nNo such record exist in the file\n");
     else 
-        printf("\n\n"   "%d records matched"   "\n", similarRecord);
+        printf("\n\n%d records matched\n", similarRecord);
     
     fclose(fp);
 }
@@ -134,13 +145,13 @@ void modifyName(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n"   "INVALID INDEX"   "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     for(int i = 1; i < index; i++){
@@ -149,7 +160,7 @@ void modifyName(int index){
     }
     
     fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType);
-    printf("\n"   "Enter Name of the record: "  );
+    printf("\nEnter Name of the record: ");
     scanf("%s", record.name);
     fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", index, record.name, record.amount, record.recordType, record.expenseType);
     
@@ -161,7 +172,7 @@ void modifyName(int index){
     fp = fopen("File_Of_Records.txt", "w");
     tp = fopen("temp.txt", "r");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -169,7 +180,7 @@ void modifyName(int index){
     }
     fclose(fp);
     fclose(tp);
-    printf("\n\n"   "RECORD SUCCESSFULLY UPDATED"   "\n");
+    printf("\n\nRECORD SUCCESSFULLY UPDATED\n");
 }
 
 // Function to modify the amount of a record
@@ -177,13 +188,13 @@ void modifyAmount(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n"   "INVALID INDEX"   "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     for(int i = 1; i < index; i++){
@@ -192,7 +203,7 @@ void modifyAmount(int index){
     }
     
     fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType);
-    printf("\n"   "Enter the Amount: "  );
+    printf("\nEnter the Amount: ");
     scanf("%d", &record.amount);
     fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", index, record.name, record.amount, record.recordType, record.expenseType);
     
@@ -204,7 +215,7 @@ void modifyAmount(int index){
     fp = fopen("File_Of_Records.txt", "w");
     tp = fopen("temp.txt", "r");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -212,7 +223,7 @@ void modifyAmount(int index){
     }
     fclose(fp);
     fclose(tp);
-    printf("\n\n"   "RECORD SUCCESSFULLY UPDATED"   "\n");
+    printf("\n\nRECORD SUCCESSFULLY UPDATED\n");
 }
 
 // Function to modify the type of a record
@@ -220,13 +231,13 @@ void modifyRtype(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n"   "INVALID INDEX"   "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     for(int i = 1; i < index; i++){
@@ -235,16 +246,16 @@ void modifyRtype(int index){
     }
     
     fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType);
-    printf("\n"   "Enter type of the record -> Ex. INCOME / EXPENSE : "  );
+    printf("\nEnter type of the record -> Ex. INCOME / EXPENSE : ");
     scanf("%s", record.recordType);
     if(strcmp(record.recordType, "INCOME") == 0)
         strcpy(record.expenseType, "NULL");
     else if(strcmp(record.recordType, "EXPENSE") == 0){
-        printf(  "Type of the Expense -> Ex. NEED / WANT / INVEST : "  );
+        printf("Type of the Expense -> Ex. NEED / WANT / INVEST : ");
         scanf("%s", record.expenseType);
     } 
     else {
-        printf("\n"   "Invalid Input"   "\n");
+        printf("\nInvalid Input\n");
         return;
     }
     fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", index, record.name, record.amount, record.recordType, record.expenseType);
@@ -257,7 +268,7 @@ void modifyRtype(int index){
     fp = fopen("File_Of_Records.txt", "w");
     tp = fopen("temp.txt", "r");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -265,7 +276,7 @@ void modifyRtype(int index){
     }
     fclose(fp);
     fclose(tp);
-    printf("\n\n"   "RECORD SUCCESSFULLY UPDATED"   "\n");
+    printf("\n\nRECORD SUCCESSFULLY UPDATED\n");
 }
 
 // Function to modify a record (name, amount, type)
@@ -273,21 +284,21 @@ void modifyRecord(int index) {
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n"   "INVALID INDEX"   "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     
     int choice;
-    printf("\n\n"   "1. Update Record Name: "   "\n");
-    printf(  "2. Update Record Amount: "   "\n");
-    printf(  "3. Update Record Type or Expense Type: "   "\n");
-    printf(  "4. Update all: "   "\n");
-    printf(  "Enter choice: "  );
+    printf("\n\n1. Update Record Name: \n");
+    printf("2. Update Record Amount: \n");
+    printf("3. Update Record Type or Expense Type: \n");
+    printf("4. Update all: \n");
+    printf("Enter choice: ");
     scanf("%d", &choice);
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
 
@@ -308,20 +319,20 @@ void modifyRecord(int index) {
             fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
         }
         
-        printf("\n"   "Enter Name of the record: "  );
+        printf("\nEnter Name of the record: ");
         scanf("%s", record.name);
-        printf(  "Enter the Amount: "  );
+        printf("Enter the Amount: ");
         scanf("%d", &record.amount);
-        printf(  "Enter type of the record -> Ex. INCOME / EXPENSE : "  );
+        printf("Enter type of the record -> Ex. INCOME / EXPENSE : ");
         scanf("%s", record.recordType);
         if(strcmp(record.recordType, "INCOME") == 0)
             strcpy(record.expenseType, "NULL");
         else if(strcmp(record.recordType, "EXPENSE") == 0){
-            printf(  "Type of the Expense -> Ex. NEED / WANT / INVEST : "  );
+            printf("Type of the Expense -> Ex. NEED / WANT / INVEST : ");
             scanf("%s", record.expenseType);
         } 
         else {
-            printf("\n\n"   "INVALID INPUT"   "\n");
+            printf("\n\nINVALID INPUT\n");
             return;
         }
         fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", index, record.name, record.amount, record.recordType, record.expenseType);
@@ -335,7 +346,7 @@ void modifyRecord(int index) {
         fp = fopen("File_Of_Records.txt", "w");
         tp = fopen("temp.txt", "r");
         if(fp == NULL || tp == NULL){
-            printf("\n\n"   "Error opening the file"   "\n");
+            printf("\n\nError opening the file\n");
             return;
         }
         while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -343,10 +354,10 @@ void modifyRecord(int index) {
         }
         fclose(fp);
         fclose(tp);
-        printf("\n\n"   "RECORD SUCCESSFULLY UPDATED"   "\n");
+        printf("\n\nRECORD SUCCESSFULLY UPDATED\n");
     
     default:
-        printf("\n\n"   "Invalid choice. Please enter a valid option."   "\n");
+        printf("\n\nInvalid choice. Please enter a valid option.\n");
         break;
     }
 }
@@ -356,13 +367,13 @@ void deleteRecord(int index) {
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n"   "INVALID INDEX"   "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     for(int i = 1; i < index; i++){
@@ -380,7 +391,7 @@ void deleteRecord(int index) {
     fp = fopen("File_Of_Records.txt", "w");
     tp = fopen("temp.txt", "r");
     if(fp == NULL || tp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -388,7 +399,7 @@ void deleteRecord(int index) {
     }
     fclose(fp);
     fclose(tp);
-    printf("\n\n"   "RECORD SUCCESSFULLY DELETED"   "\n");
+    printf("\n\nRECORD SUCCESSFULLY DELETED\n");
 }
 
 // Function to sort records by amount
@@ -397,7 +408,7 @@ void sortRecordsByAmount() {
     struct Record recordsArr[no_of_records];
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     int k = 0;
@@ -418,13 +429,13 @@ void sortRecordsByAmount() {
             }
         }
     }
-    printf("\n\n"   "PERSONAL FINANCE MANAGEMENT"   "\n");
-    printf("\n"   "%-4s %-20s %-8s %-10s %-10s\n"  , "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
     printf("----------------------------------------------------------\n");
     for(int i = 0; i < no_of_records; i++){
         printf("%-4d %-20s %-8d %-10s %-10s\n", i + 1, recordsArr[i].name, recordsArr[i].amount, recordsArr[i].recordType, recordsArr[i].expenseType);
     }
-
+    printf("\n\n%d records matched\n", no_of_records);
 }
 
 // Function to display income sources
@@ -432,11 +443,11 @@ void displayIncomeSources() {
     no_of_records = getNoOfRecords();
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
-    printf("\n\n"   "PERSONAL FINANCE MANAGEMENT"   "\n");
-    printf("\n"   "%-4s %-20s %-8s %-10s %-10s\n"  , "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
     printf("----------------------------------------------------------\n");
     int similarRecord = 0;
     while(fscanf(fp, "%d\t %s\t %d\t %s\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -446,9 +457,9 @@ void displayIncomeSources() {
         }
     }
     if (similarRecord == 0)
-        printf("\n\n"   "No such record exist in the file"   "\n");
+        printf("\n\nNo such record exist in the file\n");
     else 
-        printf("\n\n"   "%d records matched"   "\n", similarRecord);
+        printf("\n\n%d records matched\n", similarRecord);
     
     fclose(fp);
 }
@@ -458,11 +469,11 @@ void displayExpenses() {
     no_of_records = getNoOfRecords();
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
-    printf("\n\n"   "PERSONAL FINANCE MANAGEMENT"   "\n");
-    printf("\n"   "%-4s %-20s %-8s %-10s %-10s\n"  , "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
     printf("----------------------------------------------------------\n");
     int similarRecord = 0;
     while(fscanf(fp, "%d\t %s\t %d\t %s\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -472,9 +483,9 @@ void displayExpenses() {
         }
     }
     if (similarRecord == 0)
-        printf("\n\n"   "No such record exist in the file"   "\n");
+        printf("\n\nNo such record exist in the file\n");
     else 
-        printf("\n\n"   "%d records matched"   "\n", similarRecord);
+        printf("\n\n%d records matched\n", similarRecord);
     
     fclose(fp);
 }
@@ -484,11 +495,11 @@ void calculateLoanInterest() {
     double loanAmount, annualInterestRate, monthlyInterestRate;
     int loanDurationMonths;
     
-    printf("\n"   "Enter loan amount: "  );
+    printf("\nEnter loan amount: ");
     scanf("%lf", &loanAmount);
-    printf(  "Enter annual interest rate (in percentage): "  );
+    printf("Enter annual interest rate (in percentage): ");
     scanf("%lf", &annualInterestRate);
-    printf(  "Enter loan duration (in months): "  );
+    printf("Enter loan duration (in months): ");
     scanf("%d", &loanDurationMonths);
     
     // Convert annual interest rate to monthly interest rate
@@ -504,14 +515,15 @@ void calculateLoanInterest() {
     double totalInterest = totalPayment - loanAmount;
     
     // Print results
-    printf("\n\n"   "PERSONAL FINANCE MANAGEMENT"   "\n");
-    printf("\n"   "Loan Details:"   "\n");
-    printf(  "Loan Amount: "   "%.2lf\n", loanAmount);
-    printf(  "Annual Interest Rate: "   "%.2lf%%\n", annualInterestRate);
-    printf(  "Loan Duration (months): "   "%d\n", loanDurationMonths);
-    printf("\n"   "Monthly Payment: "   "%.2lf\n", monthlyPayment);
-    printf(  "Total Payment: "   "%.2lf\n", totalPayment);
-    printf(  "Total Interest Paid: "   "%.2lf\n", totalInterest);
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\nLoan Details:\n");
+    printf("Loan Amount: %.2lf\n", loanAmount);
+    printf("Annual Interest Rate: %.2lf%%\n", annualInterestRate);
+    printf("Loan Duration (months): %d\n", loanDurationMonths);
+    printf("\nMonthly Payment: %.2lf\n", monthlyPayment);
+    printf("Total Payment: %.2lf\n", totalPayment);
+    printf("Monthly Interest Paid: %.2lf\n", totalInterest/loanDurationMonths);
+    printf("Total Interest Paid: %.2lf\n", totalInterest);
 }
 
 void generateReport() {
@@ -523,7 +535,7 @@ void generateReport() {
     int no_of_records = getNoOfRecords();
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n"   "Error opening the file"   "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
 
@@ -557,23 +569,23 @@ void generateReport() {
     double wantsAmount = income * wantsRatio;
     double savingsAmount = income * savingsRatio;
 
-    printf(  "\n\nFinancial Distribution Report\n\n"  );
-    printf(  "Income                         : "   "%.2f\n", income);
-    printf(  "Total Expenses                 : "   "%.2f\n", totalExpenses);
-    printf(  "Remaining Income               : "   "%.2f\n\n", remainingIncome);
-    printf(  "Needs Expenses                 : "   "%.2f\n", needsExpenses);
-    printf(  "Wants Expenses                 : "   "%.2f\n", wantsExpenses);
-    printf(  "Savings and Investment Expenses: "   "%.2f\n\n", savingsExpenses);
-    printf(  "Needs Expected                 : "   "%.2f\n", needsAmount);
-    printf(  "Wants Expected                 : "   "%.2f\n", wantsAmount);
-    printf(  "Savings and Investment Expected: "   "%.2f\n", savingsAmount);
+    printf("\n\nFinancial Distribution Report\n\n");
+    printf("Income                         :  %.2f\n", income);
+    printf("Total Expenses                 :  %.2f\n", totalExpenses);
+    printf("Remaining Income               :  %.2f\n\n", remainingIncome);
+    printf("Needs Expenses                 :  %.2f\n", needsExpenses);
+    printf("Wants Expenses                 :  %.2f\n", wantsExpenses);
+    printf("Savings and Investment Expenses:  %.2f\n\n", savingsExpenses);
+    printf("Needs Expected                 :  %.2f\n", needsAmount);
+    printf("Wants Expected                 :  %.2f\n", wantsAmount);
+    printf("Savings and Investment Expected:  %.2f\n", savingsAmount);
     
     if (totalExpenses > income) {
-        printf("\n"   "Warning: Your total expenses exceed your income.\n"  );
+        printf("\nWarning: Your total expenses exceed your income.\n");
         printf("Ensure your expenses do not exceed your income to maintain financial stability.\n");
     }
     if (needsExpenses > needsAmount || wantsExpenses > wantsAmount || savingsExpenses < savingsAmount) {
-        printf("\n"   "Warning: Your income distribution does not meet the recommended ratio.\n"  );
+        printf("\nWarning: Your income distribution does not meet the recommended ratio.\n");
         printf("Consider adjusting your spending priorities to align with the following ratio:\n");
         printf("Needs: 50%%, Wants: 30%%, Investment: 20%%\n\n");
 
@@ -595,9 +607,9 @@ void generateReport() {
         }
     }
     else {
-        printf(  "\nCongratulations! Your income distribution meets the recommended ratio of, Needs: 50%%, Wants: 30%%, Investment: 20%%\n\n"  );
-        printf(  "Keep up the good work! Consistently managing your finances in this way will help you achieve your financial goals.\n\n"  );
-        printf(  "Remember to review your finances regularly and make adjustments as needed to stay on track.\n\n"  );
+        printf("\nCongratulations! Your income distribution meets the recommended ratio of, Needs: 50%%, Wants: 30%%, Investment: 20%%\n\n");
+        printf("Keep up the good work! Consistently managing your finances in this way will help you achieve your financial goals.\n\n");
+        printf("Remember to review your finances regularly and make adjustments as needed to stay on track.\n\n");
     }
 }
 
@@ -606,7 +618,7 @@ int main() {
     int index;
     do {
         printMenu();
-        printf(  "\nEnter your choice: "  );
+        printf("\nEnter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
@@ -617,18 +629,18 @@ int main() {
                 displayRecord();
                 break;
             case 3:
-                printf("\n"   "Enter record name you want to find: "  );
+                printf("\nEnter record name you want to find: ");
                 char str[30];
                 scanf("%s", str);
                 searchByName(str);
                 break;
             case 4:
-                printf("\n"   "Enter index number of the record you want to modify: "  );
+                printf("\nEnter index number of the record you want to modify: ");
                 scanf("%d", &index);
                 modifyRecord(index);
                 break;
             case 5:
-                printf("\n"   "Enter index number of the record you want to delete: "  );
+                printf("\nEnter index number of the record you want to delete: ");
                 scanf("%d", &index);
                 deleteRecord(index);
                 break;
@@ -648,11 +660,11 @@ int main() {
                 generateReport();
                 break;
             case 11:
-                printf("\n"   "PROGRAM IS TERMINATED"   "\n\n");
+                printf("\nPROGRAM IS TERMINATED\n\n");
                 exit(0);
                 break;
             default:
-                printf("\n"   "Invalid choice. Please enter a valid option."   "\n");
+                printf("\nInvalid choice. Please enter a valid option.\n");
         }
     } while (choice != 11);
 
