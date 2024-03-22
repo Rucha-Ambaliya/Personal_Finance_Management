@@ -522,6 +522,7 @@ void calculateLoanInterest() {
     printf("Loan Duration (months): %d\n", loanDurationMonths);
     printf("\nMonthly Payment       : %.2lf\n", monthlyPayment);
     printf("Total Payment         : %.2lf\n", totalPayment);
+    printf("Monthly Interest Paid : %.2lf\n", totalInterest/loanDurationMonths);
     printf("Total Interest Paid   : %.2lf\n", totalInterest);
 }
 
