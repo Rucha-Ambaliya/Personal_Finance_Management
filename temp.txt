@@ -1,3 +1,0 @@
-1    gro                  200      EXPENSE    NEED      
-2    grocery              6000     EXPENSE    INVEST    
-3    sal                  70000    INCOME     NULL      

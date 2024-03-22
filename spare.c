@@ -3,17 +3,6 @@
 #include <string.h>
 #include <math.h>
 
-// The code defines colors for styling the output
-
-#define ANSI_COLOR_RESET   "\x1b[0m"
-#define ANSI_COLOR_HEADER "\x1b[38;2;255;99;97m"    // #ff6361
-#define ANSI_COLOR_MENU "\x1b[38;2;188;80;144m"     // #bc5090
-#define ANSI_COLOR_ROW "\x1b[38;2;88;80;141m"       // #58508d
-#define ANSI_COLOR_CHOICE "\x1b[38;2;255;166;0m"    // #ffa600
-#define ANSI_COLOR_SUBCHOICE "\e[38;2;229;193;133m"
-#define ANSI_COLOR_OTHERS "\x1b[38;2;0;63;92m"     // #003f5c
-
-
 int no_of_records;
 
 // Struct Record is defined to represent each record in the file
@@ -27,20 +16,22 @@ struct Record {
 
 // Function to print the main menu
 void printMenu() {
-    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_MENU "1. Insert record\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "2. Display record \n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "3. Search record by name\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "4. Modify record \n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "5. Delete record \n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "6. Sort data based on the amount\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "7. Display Income sources \n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "8. Display expenses \n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "9. Calculate interest of loan \n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "10. Generate Report \n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "11. Exit \n" ANSI_COLOR_RESET);
-    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\nMenu:\n");
+    printf("1. Insert a record\n");
+    printf("2. Display records\n");
+    printf("3. Search a record by name\n");
+    printf("4. Modify a record\n");
+    printf("5. Delete a record\n");
+    printf("6. Sort data based on the amount\n");
+    printf("7. Display Income sources\n");
+    printf("8. Display expenses\n");
+    printf("9. Calculate interest of loan\n");
+    printf("10. Generate Report\n");
+    printf("11. Exit\n");
+    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
 }
 
 // Function to count the number of records in the file
@@ -62,28 +53,38 @@ int getNoOfRecords(){
 void insertRecord() {
     FILE *fp = fopen("File_Of_Records.txt", "a");
     if(fp == NULL){
-        printf(ANSI_COLOR_HEADER"\n\nError opening the file\n"ANSI_COLOR_RESET);
+        printf("\n\nError opening the file\n");
         return;
     }
     no_of_records = getNoOfRecords();
     record.idx = no_of_records + 1;
-    printf(ANSI_COLOR_OTHERS "\nEnter Name of the record: "ANSI_COLOR_RESET);
+    printf("\nEnter Name of the record: ");
     scanf("%s", record.name);
-    printf(ANSI_COLOR_OTHERS "Enter the Amount: " ANSI_COLOR_RESET);
+    printf("Enter the Amount: ");
     scanf("%d", &record.amount);
-    printf(ANSI_COLOR_OTHERS "Enter type of the record -> Ex. INCOME / EXPENSE : " ANSI_COLOR_RESET);
+    printf("Enter type of the record -> Ex. INCOME / EXPENSE : ");
     scanf("%s", record.recordType);
     if(strcmp(record.recordType, "INCOME") == 0)
         strcpy(record.expenseType, "NULL");
     else if(strcmp(record.recordType, "EXPENSE") == 0){
-        printf(ANSI_COLOR_OTHERS "Type of the Expense -> Ex. NEED / WANT / INVEST : " ANSI_COLOR_RESET);
+        printf("Type of the Expense -> Ex. NEED / WANT / INVEST : ");
         scanf("%s", record.expenseType);
+        if(
+            strcmp(record.expenseType, "NEED") == 0 ||
+            strcmp(record.expenseType, "WANT") == 0 ||
+            strcmp(record.expenseType, "INVEST") == 0
+        ){}
+        else{
+            printf("\nInvalid Input\n");
+            return;
+        }
     } 
     else {
-        printf(ANSI_COLOR_OTHERS "\nInvalid Input" ANSI_COLOR_RESET "\n");
+        printf("\nInvalid Input\n");
         return;
     }
     fprintf(fp, "%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
+    printf("\n\nRECORD SUCCESSFULLY INSERTED\n");
     fclose(fp);
 }
 
@@ -91,19 +92,21 @@ void insertRecord() {
 void displayRecord() {
     no_of_records = getNoOfRecords();
     if(no_of_records <= 0){
-        printf(ANSI_COLOR_OTHERS "\n\nFILE IS EMPTY\n\n");
+        printf("\n\nFILE IS EMPTY\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_ROW "%-4s %-20s %-8s %-10s %-10s\n" ANSI_COLOR_RESET, "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("----------------------------------------------------------\n");
     while(fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
         printf("%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
     }
+    printf("\n\n%d records matched\n", no_of_records);
     fclose((fp));
 }
 
@@ -112,16 +115,17 @@ void searchByName(char *nameToFind){
     no_of_records = getNoOfRecords();
     int similarRecord = 0;
     if(no_of_records <= 0){
-        printf("\n\n" ANSI_COLOR_OTHERS "FILE IS EMPTY" ANSI_COLOR_RESET "\n\n");
+        printf("\n\nFILE IS EMPTY\n\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_ROW "%-4s %-20s %-8s %-10s %-10s\n" ANSI_COLOR_RESET, "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("----------------------------------------------------------\n");
     while(fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
         if(strcmp(record.name, nameToFind) == 0){
             printf("%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
@@ -129,9 +133,9 @@ void searchByName(char *nameToFind){
         }
     }
     if (similarRecord == 0)
-        printf("\n\n" ANSI_COLOR_OTHERS "No such record exist in the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nNo such record exist in the file\n");
     else 
-        printf("\n\n" ANSI_COLOR_OTHERS "%d records matched" ANSI_COLOR_RESET "\n", similarRecord);
+        printf("\n\n%d records matched\n", similarRecord);
     
     fclose(fp);
 }
@@ -141,13 +145,13 @@ void modifyName(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n" ANSI_COLOR_OTHERS "INVALID INDEX" ANSI_COLOR_RESET "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     for(int i = 1; i < index; i++){
@@ -156,7 +160,7 @@ void modifyName(int index){
     }
     
     fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType);
-    printf("\n" ANSI_COLOR_OTHERS "Enter Name of the record: " ANSI_COLOR_RESET);
+    printf("\nEnter Name of the record: ");
     scanf("%s", record.name);
     fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", index, record.name, record.amount, record.recordType, record.expenseType);
     
@@ -168,7 +172,7 @@ void modifyName(int index){
     fp = fopen("File_Of_Records.txt", "w");
     tp = fopen("temp.txt", "r");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -176,7 +180,7 @@ void modifyName(int index){
     }
     fclose(fp);
     fclose(tp);
-    printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY UPDATED" ANSI_COLOR_RESET "\n");
+    printf("\n\nRECORD SUCCESSFULLY UPDATED\n");
 }
 
 // Function to modify the amount of a record
@@ -184,13 +188,13 @@ void modifyAmount(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n" ANSI_COLOR_OTHERS "INVALID INDEX" ANSI_COLOR_RESET "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     for(int i = 1; i < index; i++){
@@ -199,7 +203,7 @@ void modifyAmount(int index){
     }
     
     fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType);
-    printf("\n" ANSI_COLOR_OTHERS "Enter the Amount: " ANSI_COLOR_RESET);
+    printf("\nEnter the Amount: ");
     scanf("%d", &record.amount);
     fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", index, record.name, record.amount, record.recordType, record.expenseType);
     
@@ -211,7 +215,7 @@ void modifyAmount(int index){
     fp = fopen("File_Of_Records.txt", "w");
     tp = fopen("temp.txt", "r");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -219,7 +223,7 @@ void modifyAmount(int index){
     }
     fclose(fp);
     fclose(tp);
-    printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY UPDATED" ANSI_COLOR_RESET "\n");
+    printf("\n\nRECORD SUCCESSFULLY UPDATED\n");
 }
 
 // Function to modify the type of a record
@@ -227,13 +231,13 @@ void modifyRtype(int index){
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n" ANSI_COLOR_OTHERS "INVALID INDEX" ANSI_COLOR_RESET "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     for(int i = 1; i < index; i++){
@@ -242,16 +246,16 @@ void modifyRtype(int index){
     }
     
     fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType);
-    printf("\n" ANSI_COLOR_OTHERS "Enter type of the record -> Ex. INCOME / EXPENSE : " ANSI_COLOR_RESET);
+    printf("\nEnter type of the record -> Ex. INCOME / EXPENSE : ");
     scanf("%s", record.recordType);
     if(strcmp(record.recordType, "INCOME") == 0)
         strcpy(record.expenseType, "NULL");
     else if(strcmp(record.recordType, "EXPENSE") == 0){
-        printf(ANSI_COLOR_OTHERS "Type of the Expense -> Ex. NEED / WANT / INVEST : " ANSI_COLOR_RESET);
+        printf("Type of the Expense -> Ex. NEED / WANT / INVEST : ");
         scanf("%s", record.expenseType);
     } 
     else {
-        printf("\n" ANSI_COLOR_OTHERS "Invalid Input" ANSI_COLOR_RESET "\n");
+        printf("\nInvalid Input\n");
         return;
     }
     fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", index, record.name, record.amount, record.recordType, record.expenseType);
@@ -264,7 +268,7 @@ void modifyRtype(int index){
     fp = fopen("File_Of_Records.txt", "w");
     tp = fopen("temp.txt", "r");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -272,7 +276,7 @@ void modifyRtype(int index){
     }
     fclose(fp);
     fclose(tp);
-    printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY UPDATED" ANSI_COLOR_RESET "\n");
+    printf("\n\nRECORD SUCCESSFULLY UPDATED\n");
 }
 
 // Function to modify a record (name, amount, type)
@@ -280,21 +284,21 @@ void modifyRecord(int index) {
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n" ANSI_COLOR_OTHERS "INVALID INDEX" ANSI_COLOR_RESET "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     
     int choice;
-    printf("\n\n" ANSI_COLOR_OTHERS "1. Update Record Name: " ANSI_COLOR_RESET "\n");
-    printf(ANSI_COLOR_OTHERS "2. Update Record Amount: " ANSI_COLOR_RESET "\n");
-    printf(ANSI_COLOR_OTHERS "3. Update Record Type or Expense Type: " ANSI_COLOR_RESET "\n");
-    printf(ANSI_COLOR_OTHERS "4. Update all: " ANSI_COLOR_RESET "\n");
-    printf(ANSI_COLOR_SUBCHOICE "Enter choice: " ANSI_COLOR_RESET);
+    printf("\n\n1. Update Record Name: \n");
+    printf("2. Update Record Amount: \n");
+    printf("3. Update Record Type or Expense Type: \n");
+    printf("4. Update all: \n");
+    printf("Enter choice: ");
     scanf("%d", &choice);
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
 
@@ -315,20 +319,20 @@ void modifyRecord(int index) {
             fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
         }
         
-        printf("\n" ANSI_COLOR_OTHERS "Enter Name of the record: " ANSI_COLOR_RESET);
+        printf("\nEnter Name of the record: ");
         scanf("%s", record.name);
-        printf(ANSI_COLOR_OTHERS "Enter the Amount: " ANSI_COLOR_RESET);
+        printf("Enter the Amount: ");
         scanf("%d", &record.amount);
-        printf(ANSI_COLOR_OTHERS "Enter type of the record -> Ex. INCOME / EXPENSE : " ANSI_COLOR_RESET);
+        printf("Enter type of the record -> Ex. INCOME / EXPENSE : ");
         scanf("%s", record.recordType);
         if(strcmp(record.recordType, "INCOME") == 0)
             strcpy(record.expenseType, "NULL");
         else if(strcmp(record.recordType, "EXPENSE") == 0){
-            printf(ANSI_COLOR_OTHERS "Type of the Expense -> Ex. NEED / WANT / INVEST : " ANSI_COLOR_RESET);
+            printf("Type of the Expense -> Ex. NEED / WANT / INVEST : ");
             scanf("%s", record.expenseType);
         } 
         else {
-            printf("\n\n" ANSI_COLOR_OTHERS "INVALID INPUT" ANSI_COLOR_RESET "\n");
+            printf("\n\nINVALID INPUT\n");
             return;
         }
         fprintf(tp, "%-4d %-20s %-8d %-10s %-10s\n", index, record.name, record.amount, record.recordType, record.expenseType);
@@ -342,7 +346,7 @@ void modifyRecord(int index) {
         fp = fopen("File_Of_Records.txt", "w");
         tp = fopen("temp.txt", "r");
         if(fp == NULL || tp == NULL){
-            printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+            printf("\n\nError opening the file\n");
             return;
         }
         while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -350,10 +354,10 @@ void modifyRecord(int index) {
         }
         fclose(fp);
         fclose(tp);
-        printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY UPDATED" ANSI_COLOR_RESET "\n");
+        printf("\n\nRECORD SUCCESSFULLY UPDATED\n");
     
     default:
-        printf("\n\n" ANSI_COLOR_OTHERS "Invalid choice. Please enter a valid option." ANSI_COLOR_RESET "\n");
+        printf("\n\nInvalid choice. Please enter a valid option.\n");
         break;
     }
 }
@@ -363,13 +367,13 @@ void deleteRecord(int index) {
     no_of_records = getNoOfRecords();
     if (index > no_of_records || index < 1)
     {
-        printf("\n\n" ANSI_COLOR_OTHERS "INVALID INDEX" ANSI_COLOR_RESET "\n");
+        printf("\n\nINVALID INDEX\n");
         return;
     }
     FILE *fp = fopen("File_Of_Records.txt", "r");
     FILE *tp = fopen("temp.txt", "w");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     for(int i = 1; i < index; i++){
@@ -387,7 +391,7 @@ void deleteRecord(int index) {
     fp = fopen("File_Of_Records.txt", "w");
     tp = fopen("temp.txt", "r");
     if(fp == NULL || tp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     while(fscanf(tp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
@@ -395,7 +399,7 @@ void deleteRecord(int index) {
     }
     fclose(fp);
     fclose(tp);
-    printf("\n\n" ANSI_COLOR_OTHERS "RECORD SUCCESSFULLY DELETED" ANSI_COLOR_RESET "\n");
+    printf("\n\nRECORD SUCCESSFULLY DELETED\n");
 }
 
 // Function to sort records by amount
@@ -404,7 +408,7 @@ void sortRecordsByAmount() {
     struct Record recordsArr[no_of_records];
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
     int k = 0;
@@ -425,12 +429,13 @@ void sortRecordsByAmount() {
             }
         }
     }
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_ROW "%-4s %-20s %-8s %-10s %-10s\n" ANSI_COLOR_RESET, "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("----------------------------------------------------------\n");
     for(int i = 0; i < no_of_records; i++){
         printf("%-4d %-20s %-8d %-10s %-10s\n", i + 1, recordsArr[i].name, recordsArr[i].amount, recordsArr[i].recordType, recordsArr[i].expenseType);
     }
-
+    printf("\n\n%d records matched\n", no_of_records);
 }
 
 // Function to display income sources
@@ -438,11 +443,12 @@ void displayIncomeSources() {
     no_of_records = getNoOfRecords();
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_ROW "%-4s %-20s %-8s %-10s %-10s\n" ANSI_COLOR_RESET, "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("----------------------------------------------------------\n");
     int similarRecord = 0;
     while(fscanf(fp, "%d\t %s\t %d\t %s\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
         if(strcmp(record.recordType, "INCOME") == 0){
@@ -451,9 +457,9 @@ void displayIncomeSources() {
         }
     }
     if (similarRecord == 0)
-        printf("\n\n" ANSI_COLOR_OTHERS "No such record exist in the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nNo such record exist in the file\n");
     else 
-        printf("\n\n" ANSI_COLOR_OTHERS "%d records matched" ANSI_COLOR_RESET "\n", similarRecord);
+        printf("\n\n%d records matched\n", similarRecord);
     
     fclose(fp);
 }
@@ -463,11 +469,12 @@ void displayExpenses() {
     no_of_records = getNoOfRecords();
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_ROW "%-4s %-20s %-8s %-10s %-10s\n" ANSI_COLOR_RESET, "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\n%-4s %-20s %-8s %-10s %-10s\n", "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("----------------------------------------------------------\n");
     int similarRecord = 0;
     while(fscanf(fp, "%d\t %s\t %d\t %s\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
         if(strcmp(record.recordType, "EXPENSE") == 0){
@@ -476,9 +483,9 @@ void displayExpenses() {
         }
     }
     if (similarRecord == 0)
-        printf("\n\n" ANSI_COLOR_OTHERS "No such record exist in the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nNo such record exist in the file\n");
     else 
-        printf("\n\n" ANSI_COLOR_OTHERS "%d records matched" ANSI_COLOR_RESET "\n", similarRecord);
+        printf("\n\n%d records matched\n", similarRecord);
     
     fclose(fp);
 }
@@ -488,11 +495,11 @@ void calculateLoanInterest() {
     double loanAmount, annualInterestRate, monthlyInterestRate;
     int loanDurationMonths;
     
-    printf("\n" ANSI_COLOR_OTHERS "Enter loan amount: " ANSI_COLOR_RESET);
+    printf("\nEnter loan amount: ");
     scanf("%lf", &loanAmount);
-    printf(ANSI_COLOR_OTHERS "Enter annual interest rate (in percentage): " ANSI_COLOR_RESET);
+    printf("Enter annual interest rate (in percentage): ");
     scanf("%lf", &annualInterestRate);
-    printf(ANSI_COLOR_OTHERS "Enter loan duration (in months): " ANSI_COLOR_RESET);
+    printf("Enter loan duration (in months): ");
     scanf("%d", &loanDurationMonths);
     
     // Convert annual interest rate to monthly interest rate
@@ -508,14 +515,14 @@ void calculateLoanInterest() {
     double totalInterest = totalPayment - loanAmount;
     
     // Print results
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_SUBCHOICE "Loan Details:" ANSI_COLOR_RESET "\n\n");
-    printf(ANSI_COLOR_OTHERS "Loan Amount           : " ANSI_COLOR_RESET "%.2lf\n", loanAmount);
-    printf(ANSI_COLOR_OTHERS "Annual Interest Rate  : " ANSI_COLOR_RESET "%.2lf%%\n", annualInterestRate);
-    printf(ANSI_COLOR_OTHERS "Loan Duration (months): " ANSI_COLOR_RESET "%d\n", loanDurationMonths);
-    printf("\n" ANSI_COLOR_OTHERS "Monthly Payment       : " ANSI_COLOR_RESET "%.2lf\n", monthlyPayment);
-    printf(ANSI_COLOR_OTHERS "Total Payment         : " ANSI_COLOR_RESET "%.2lf\n", totalPayment);
-    printf(ANSI_COLOR_OTHERS "Total Interest Paid   : " ANSI_COLOR_RESET "%.2lf\n", totalInterest);
+    printf("\n\nPERSONAL FINANCE MANAGEMENT\n");
+    printf("\nLoan Details:\n\n");
+    printf("Loan Amount           : %.2lf\n", loanAmount);
+    printf("Annual Interest Rate  : %.2lf%%\n", annualInterestRate);
+    printf("Loan Duration (months): %d\n", loanDurationMonths);
+    printf("\nMonthly Payment       : %.2lf\n", monthlyPayment);
+    printf("Total Payment         : %.2lf\n", totalPayment);
+    printf("Total Interest Paid   : %.2lf\n", totalInterest);
 }
 
 void generateReport() {
@@ -527,7 +534,7 @@ void generateReport() {
     int no_of_records = getNoOfRecords();
     FILE *fp = fopen("File_Of_Records.txt", "r");
     if(fp == NULL){
-        printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
+        printf("\n\nError opening the file\n");
         return;
     }
 
@@ -561,35 +568,47 @@ void generateReport() {
     double wantsAmount = income * wantsRatio;
     double savingsAmount = income * savingsRatio;
 
-    printf(ANSI_COLOR_HEADER "\n\nFinancial Distribution Report\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_OTHERS "Income: " ANSI_COLOR_RESET "%.2f\n", income);
-    printf(ANSI_COLOR_OTHERS "Total Expenses: " ANSI_COLOR_RESET "%.2f\n", totalExpenses);
-    printf(ANSI_COLOR_OTHERS"Remaining Income: " ANSI_COLOR_RESET "%.2f\n", remainingIncome);
-    printf(ANSI_COLOR_OTHERS "Needs Expenses: " ANSI_COLOR_RESET "%.2f\n", needsExpenses);
-    printf(ANSI_COLOR_OTHERS "Wants Expenses: " ANSI_COLOR_RESET "%.2f\n", wantsExpenses);
-    printf(ANSI_COLOR_OTHERS "Savings Expenses: " ANSI_COLOR_RESET "%.2f\n", savingsExpenses);
-    printf(ANSI_COLOR_OTHERS "Needs Expected: " ANSI_COLOR_RESET "%.2f\n", needsAmount);
-    printf(ANSI_COLOR_OTHERS "Wants Expected: " ANSI_COLOR_RESET "%.2f\n", wantsAmount);
-    printf(ANSI_COLOR_OTHERS "Investment Expected: " ANSI_COLOR_RESET "%.2f\n", savingsAmount);
+    printf("\n\nFinancial Distribution Report\n\n");
+    printf("Income                         :  %.2f\n", income);
+    printf("Total Expenses                 :  %.2f\n", totalExpenses);
+    printf("Remaining Income               :  %.2f\n\n", remainingIncome);
+    printf("Needs Expenses                 :  %.2f\n", needsExpenses);
+    printf("Wants Expenses                 :  %.2f\n", wantsExpenses);
+    printf("Savings and Investment Expenses:  %.2f\n\n", savingsExpenses);
+    printf("Needs Expected                 :  %.2f\n", needsAmount);
+    printf("Wants Expected                 :  %.2f\n", wantsAmount);
+    printf("Savings and Investment Expected:  %.2f\n", savingsAmount);
     
-    // Check if the user's distribution matches the standard ratio
+    if (totalExpenses > income) {
+        printf("\nWarning: Your total expenses exceed your income.\n");
+        printf("Ensure your expenses do not exceed your income to maintain financial stability.\n");
+    }
     if (needsExpenses > needsAmount || wantsExpenses > wantsAmount || savingsExpenses < savingsAmount) {
-        printf("\n" ANSI_COLOR_HEADER "Warning: Your income distribution does not meet the recommended ratio.\n" ANSI_COLOR_RESET);
-        printf("Consider adjusting your spending to align with the following ratio:\n");
-        printf("Needs: 50%%, Wants: 30%%, Savings: 20%%\n");
-    } else {
-        printf(ANSI_COLOR_SUBCHOICE "\nCongratulations! Your income distribution meets the recommended ratio.\n" ANSI_COLOR_RESET);
-    }
+        printf("\nWarning: Your income distribution does not meet the recommended ratio.\n");
+        printf("Consider adjusting your spending priorities to align with the following ratio:\n");
+        printf("Needs: 50%%, Wants: 30%%, Investment: 20%%\n\n");
 
-    // Check individual expenses against the standard ratios
-    if (needsExpenses > needsAmount) {
-        printf("\n" ANSI_COLOR_HEADER "Warning: Your needs expenses exceed the recommended ratio.\n" ANSI_COLOR_RESET);
+        // Provide suggestions for adjusting spending priorities
+        if (needsExpenses > needsAmount) {
+            double adjustment = needsExpenses - needsAmount;
+            printf("-> Reduce your needs expenses by %.2f to align with the recommended ratio.\n", adjustment);
+            printf("-> Ensure that your essential needs are being met, but consider evaluating your expenses to see if any non-essential items can be reduced.\n\n");
+        }
+        if (wantsExpenses > wantsAmount) {
+            double adjustment = wantsExpenses - wantsAmount;
+            printf("-> Reduce your wants expenses by %.2f to align with the recommended ratio.\n", adjustment);
+            printf("-> Review your discretionary spending on non-essential items such as entertainment, dining out, or luxury purchases. Consider cutting back on these expenses to bring them in line with your financial goals.\n\n");
+        }
+        if (savingsExpenses < savingsAmount) {
+            double adjustment = savingsAmount - savingsExpenses;
+            printf("-> Increase your savings and Invesment expenses by %.2f to align with the recommended ratio.\n", adjustment);
+            printf("-> While it's important to prioritize savings, ensure that you are not neglecting your current needs and wants. Consider reallocating some funds from other categories to boost your savings.\n\n");
+        }
     }
-    if (wantsExpenses > wantsAmount) {
-        printf(ANSI_COLOR_HEADER "Warning: Your wants expenses exceed the recommended ratio.\n" ANSI_COLOR_RESET);
-    }
-    if (savingsExpenses < savingsAmount) {
-        printf(ANSI_COLOR_HEADER "Warning: Your savings expenses exceed the recommended ratio.\n" ANSI_COLOR_RESET);
+    else {
+        printf("\nCongratulations! Your income distribution meets the recommended ratio of, Needs: 50%%, Wants: 30%%, Investment: 20%%\n\n");
+        printf("Keep up the good work! Consistently managing your finances in this way will help you achieve your financial goals.\n\n");
+        printf("Remember to review your finances regularly and make adjustments as needed to stay on track.\n\n");
     }
 }
 
@@ -598,7 +617,7 @@ int main() {
     int index;
     do {
         printMenu();
-        printf(ANSI_COLOR_CHOICE "\nEnter your choice: " ANSI_COLOR_RESET);
+        printf("\nEnter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
@@ -609,18 +628,18 @@ int main() {
                 displayRecord();
                 break;
             case 3:
-                printf("\n" ANSI_COLOR_OTHERS "Enter record name you want to find: " ANSI_COLOR_RESET);
+                printf("\nEnter record name you want to find: ");
                 char str[30];
                 scanf("%s", str);
                 searchByName(str);
                 break;
             case 4:
-                printf("\n" ANSI_COLOR_OTHERS "Enter index number of the record you want to modify: " ANSI_COLOR_RESET);
+                printf("\nEnter index number of the record you want to modify: ");
                 scanf("%d", &index);
                 modifyRecord(index);
                 break;
             case 5:
-                printf("\n" ANSI_COLOR_OTHERS "Enter index number of the record you want to delete: " ANSI_COLOR_RESET);
+                printf("\nEnter index number of the record you want to delete: ");
                 scanf("%d", &index);
                 deleteRecord(index);
                 break;
@@ -640,11 +659,11 @@ int main() {
                 generateReport();
                 break;
             case 11:
-                printf("\n" ANSI_COLOR_OTHERS "PROGRAM IS TERMINATED" ANSI_COLOR_RESET "\n\n");
+                printf("\nPROGRAM IS TERMINATED\n\n");
                 exit(0);
                 break;
             default:
-                printf("\n" ANSI_COLOR_OTHERS "Invalid choice. Please enter a valid option." ANSI_COLOR_RESET "\n");
+                printf("\nInvalid choice. Please enter a valid option.\n");
         }
     } while (choice != 11);
 
