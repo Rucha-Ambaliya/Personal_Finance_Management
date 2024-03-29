@@ -28,22 +28,26 @@ struct Record {
 
 // Function to print the main menu
 void printMenu() {
-    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_SUBCHOICE "Menu:\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "1. Insert a record\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "2. Display records\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "3. Search a record by name\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "4. Modify a record\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "5. Delete a record\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "6. Sort data based on the amount\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "7. Display Income sources\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "8. Display expenses\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "9. Calculate interest of loan\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "10. Generate Report\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MENU "11. Exit\n" ANSI_COLOR_RESET);
-    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    printf("\n|                                                                                       |");
+    printf("\n|\t\t\t\t" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\t\t\t\t|");
+    printf("\n|                                                                                       |");
+    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    printf("\n|                                                                                       |");
+    printf("\n|\t" ANSI_COLOR_SUBCHOICE "Menu:" ANSI_COLOR_RESET "%-75s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "1. Insert a record" ANSI_COLOR_RESET "%-62s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "2. Display records" ANSI_COLOR_RESET "%62s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "3. Search a record by name" ANSI_COLOR_RESET "%-54s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "4. Modify a record" ANSI_COLOR_RESET "%-62s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "5. Delete a record" ANSI_COLOR_RESET "%62s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "6. Sort data based on the amount" ANSI_COLOR_RESET "%48s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "7. Display Income sources" ANSI_COLOR_RESET "%55s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "8. Display expenses" ANSI_COLOR_RESET "%-61s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "9. Calculate interest of loan" ANSI_COLOR_RESET "%-51s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "10. Generate Report" ANSI_COLOR_RESET "%-61s|\n", "");
+    printf("|\t" ANSI_COLOR_MENU "11. Exit" ANSI_COLOR_RESET "%-72s|", "");
+    printf("\n|                                                                                       |");
+    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
 }
 
 // Function to count the number of records in the file
@@ -112,12 +116,15 @@ void displayRecord() {
         printf("\n\n" ANSI_COLOR_OTHERS "Error opening the file" ANSI_COLOR_RESET "\n");
         return;
     }
-    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n");
-    printf("\n" ANSI_COLOR_ROW "%-4s %-20s %-8s %-10s %-10s\n" ANSI_COLOR_RESET, "IDX", "Record Name", "Amount", "RType", "EType");
-    printf("----------------------------------------------------------\n");
+    printf("\n\n" ANSI_COLOR_HEADER "PERSONAL FINANCE MANAGEMENT" ANSI_COLOR_RESET "\n\n");
+    printf("+------------------------------------------------------+");
+    printf("\n| " ANSI_COLOR_ROW "%-4s %-20s %-8s %-10s %-7s" ANSI_COLOR_RESET "|\n", "IDX", "Record Name", "Amount", "RType", "EType");
+    printf("+------------------------------------------------------+\n");
     while(fscanf(fp, "%d\t %s\t %d\t %s\t\t %s\n", &record.idx, record.name, &record.amount, record.recordType, record.expenseType) != EOF){
-        printf("%-4d %-20s %-8d %-10s %-10s\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
+        printf("| %-4d %-20s %-8d %-10s %-7s|\n", record.idx, record.name, record.amount, record.recordType, record.expenseType);
     }
+    printf("+------------------------------------------------------+\n");
+
     printf("\n\n" ANSI_COLOR_OTHERS "%d records matched\n" ANSI_COLOR_RESET, no_of_records);
     fclose((fp));
 }
